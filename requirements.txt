@@ -1,0 +1,12 @@
+numpy
+torch
+tqdm
+transformers
+vllm
+peft
+fire
+faiss-cpu
+h5py
+protobuf
+sentencepiece
+accelerate

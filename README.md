@@ -11,7 +11,9 @@
 **DynaAct** is a framework for enhancing **sequential reasoning** in Large Language Models (LLMs) by **dynamically constructing compact action spaces**.  
 It introduces a **submodular function–based optimization** that jointly maximizes **utility** (relevance to the current reasoning state) and **diversity** (non-redundant reasoning directions).  
 
-This dynamic action selection enables LLMs to **think more efficiently** — focusing on the most informative reasoning steps while maintaining low inference latency.
+This dynamic action selection enables LLMs to **think more efficiently** — focusing on the most informative reasoning steps while maintaining low inference latency. 
+
+🔥 **vLLM-Accelerated MCTS**: DynaAct integrates vLLM into its MCTS module, transforming per-node serial LLM queries into batched, parallel, mixed-precision inference across GPUs. This dramatically accelerates expansion (candidate generation) and evaluation (multi-sample self-judging), enabling more efficient rollouts under the same compute budget.
 
 ---
 
@@ -59,11 +61,14 @@ Train the embedding model that captures the Q-learning–based utility signal fo
 
 ````bash
 python prepare_action_embeddings.py \
-  --data_path demo/platypus_sketches.jsonl \
+  --data_path /path/to/platypus_sketches \
   --output_path output/action_embeddings.pt \
   --submodular_base_path /path/to/Llama-3.2-1B-Instruct \
-  --submodular_lora_path /path/to/lora/model
+  --submodular_lora_path /path/to/sqil_embedding
 ````
+
+Pre-trained resources are available on ModelScope:  
+🧩 [platypus_sketches dataset](https://modelscope.cn/datasets/zhaoxlpku/platypus_sketches) | 🔗 [sqil_embedding model](https://modelscope.cn/models/zhaoxlpku/sqil_embedding)
 
 ---
 
@@ -79,7 +84,7 @@ python mcts.py \
   --model_path /path/to/Meta-Llama-3.1-8B-Instruct \
   --embedding_path output/action_embeddings.pt \
   --submodular_base_path /path/to/Llama-3.2-1B-Instruct \
-  --submodular_lora_path /path/to/lora/model \
+  --submodular_lora_path /path/to/sqil_embedding \
   --n_gpus 1 \
   --temperature 0.2 \
   --max_len 1024 \
